@@ -1,0 +1,416 @@
+User Service
+
+@Entity
+@Table(name = "users")
+public class User {
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private UUID userId;
+
+    private String username;
+    private String email;
+    private String passwordHash;
+    
+    @Enumerated(EnumType.STRING)
+    private Role role; // Enum: Admin, HR, Manager, Employee
+
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
+}
+
+public enum Role {
+    ADMIN,
+    HR,
+    MANAGER,
+    EMPLOYEE
+}
+
+@Entity
+@Table(name = "user_profiles")
+public class UserProfile {
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private UUID profileId;
+
+    @ManyToOne
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
+
+    private String firstName;
+    private String lastName;
+    private String phoneNumber;
+    private String address;
+    private String profilePhotoUrl;
+
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
+}
+
+Employee Management Service
+
+@Entity
+@Table(name = "employees")
+public class Employee {
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private UUID employeeId;
+
+    @ManyToOne
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
+
+    @ManyToOne
+    @JoinColumn(name = "department_id", nullable = false)
+    private Department department;
+
+    @ManyToOne
+    @JoinColumn(name = "reporting_manager_id")
+    private Employee reportingManager;
+
+    @Enumerated(EnumType.STRING)
+    private Status status; // Enum: ACTIVE, INACTIVE, TERMINATED
+
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
+}
+
+@Entity
+@Table(name = "departments")
+public class Department {
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private UUID departmentId;
+
+    private String departmentName;
+
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
+}
+
+Attendance Service
+
+@Entity
+@Table(name = "attendance_records")
+public class AttendanceRecord {
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private UUID recordId;
+
+    @ManyToOne
+    @JoinColumn(name = "employee_id", nullable = false)
+    private Employee employee;
+
+    private LocalDate date;
+    private LocalDateTime clockInTime;
+    private LocalDateTime clockOutTime;
+
+    @Enumerated(EnumType.STRING)
+    private AttendanceStatus status; // Enum: PRESENT, ABSENT, LEAVE
+
+    private BigDecimal hoursWorked;
+    
+    @Enumerated(EnumType.STRING)
+    private ApprovalStatus approvalStatus; // Enum: PENDING, APPROVED, NEEDS_CORRECTION
+
+    @ManyToOne
+    @JoinColumn(name = "manager_id")
+    private Employee manager;
+
+    private String remarks;
+
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
+}
+
+public enum AttendanceStatus {
+    PRESENT,
+    ABSENT,
+    LEAVE
+}
+
+public enum ApprovalStatus {
+    PENDING,
+    APPROVED,
+    NEEDS_CORRECTION
+}
+
+HR Service
+
+@Entity
+@Table(name = "leave_requests")
+public class LeaveRequest {
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private UUID leaveId;
+
+    @ManyToOne
+    @JoinColumn(name = "employee_id", nullable = false)
+    private Employee employee;
+
+    private LocalDate startDate;
+    private LocalDate endDate;
+
+    @Enumerated(EnumType.STRING)
+    private LeaveType leaveType; // Enum: SICK, VACATION, PERSONAL
+
+    @Enumerated(EnumType.STRING)
+    private LeaveStatus status; // Enum: PENDING, APPROVED, REJECTED
+
+    @ManyToOne
+    @JoinColumn(name = "manager_id")
+    private Employee manager;
+
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
+}
+
+public enum LeaveType {
+    SICK,
+    VACATION,
+    PERSONAL
+}
+
+public enum LeaveStatus {
+    PENDING,
+    APPROVED,
+    REJECTED
+}
+
+Project Management Service
+
+@Entity
+@Table(name = "projects")
+public class Project {
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private UUID projectId;
+
+    private String projectName;
+    private String description;
+    private LocalDate startDate;
+    private LocalDate endDate;
+
+    @Enumerated(EnumType.STRING)
+    private ProjectStatus status; // Enum: ACTIVE, COMPLETED, ON_HOLD
+
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
+}
+
+@Entity
+@Table(name = "project_members")
+public class ProjectMember {
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private UUID projectMemberId;
+
+    @ManyToOne
+    @JoinColumn(name = "project_id", nullable = false)
+    private Project project;
+
+    @ManyToOne
+    @JoinColumn(name = "employee_id", nullable = false)
+    private Employee employee;
+
+    private String role; // Role in the project (e.g., Developer, Designer)
+
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
+}
+
+public enum ProjectStatus {
+    ACTIVE,
+    COMPLETED,
+    ON_HOLD
+}
+
+Task Management Service
+
+@Entity
+@Table(name = "tasks")
+public class Task {
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private UUID taskId;
+
+    @ManyToOne
+    @JoinColumn(name = "project_id", nullable = false)
+    private Project project;
+
+    private String taskName;
+    private String description;
+
+    @ManyToOne
+    @JoinColumn(name = "assigned_to", nullable = false)
+    private Employee assignedTo;
+
+    @Enumerated(EnumType.STRING)
+    private TaskStatus status; // Enum: NOT_STARTED, IN_PROGRESS, COMPLETED, BLOCKED
+
+    @Enumerated(EnumType.STRING)
+    private TaskPriority priority; // Enum: LOW, MEDIUM, HIGH
+
+    private LocalDate dueDate;
+
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
+}
+
+public enum TaskStatus {
+    NOT_STARTED,
+    IN_PROGRESS,
+    COMPLETED,
+    BLOCKED
+}
+
+public enum TaskPriority {
+    LOW,
+    MEDIUM,
+    HIGH
+}
+
+Training Management Service
+
+@Entity
+@Table(name = "courses")
+public class Course {
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private UUID courseId;
+
+    private String courseName;
+    private String description;
+    private Integer duration; // Duration in hours or days
+
+    @Enumerated(EnumType.STRING)
+    private CourseStatus status; // Enum: ACTIVE, INACTIVE
+
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
+}
+
+@Entity
+@Table(name = "enrollments")
+public class Enrollment {
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private UUID enrollmentId;
+
+    @ManyToOne
+    @JoinColumn(name = "course_id", nullable = false)
+    private Course course;
+
+    @ManyToOne
+    @JoinColumn(name = "employee_id", nullable = false)
+    private Employee employee;
+
+    private LocalDateTime enrollmentDate;
+    private LocalDateTime completionDate;
+
+    @Enumerated(EnumType.STRING)
+    private EnrollmentStatus status; // Enum: IN_PROGRESS, COMPLETED, FAILED
+
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
+}
+
+public enum CourseStatus {
+    ACTIVE,
+    INACTIVE
+}
+
+public enum EnrollmentStatus {
+    IN_PROGRESS,
+    COMPLETED,
+    FAILED
+}
+
+Payroll Management Service
+
+@Entity
+@Table(name = "payrolls")
+public class Payroll {
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private UUID payrollId;
+
+    @ManyToOne
+    @JoinColumn(name = "employee_id", nullable = false)
+    private Employee employee;
+
+    private BigDecimal salary; // Base salary
+    private BigDecimal bonus; // Additional bonuses
+    private BigDecimal deductions; // Deductions (taxes, insurance, etc.)
+    private BigDecimal netPay; // Final pay after deductions
+
+    private LocalDate payPeriodStart;
+    private LocalDate payPeriodEnd;
+    private LocalDate paymentDate;
+
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
+}
+
+@Entity
+@Table(name = "payroll_history")
+public class PayrollHistory {
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private UUID historyId;
+
+    @ManyToOne
+    @JoinColumn(name = "payroll_id", nullable = false)
+    private Payroll payroll;
+
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
+
+    // Store the changes made (optional)
+    private String changes; // JSON or string representation of changes
+}
+
+Notification Service
+
+@Entity
+@Table(name = "notifications")
+public class Notification {
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private UUID notificationId;
+
+    @ManyToOne
+    @JoinColumn(name = "recipient_id", nullable = false)
+    private User recipient; // The user receiving the notification
+
+    @ManyToOne
+    @JoinColumn(name = "sender_id", nullable = false)
+    private User sender; // The user sending the notification
+
+    private String message; // The content of the notification
+
+    @Enumerated(EnumType.STRING)
+    private NotificationType type; // Enum: EMAIL, SMS, PUSH
+
+    @Enumerated(EnumType.STRING)
+    private NotificationStatus status; // Enum: SENT, PENDING, FAILED
+
+    private LocalDateTime createdAt; // Timestamp of when the notification was created
+    private LocalDateTime sentAt; // Timestamp of when the notification was sent
+
+    // Additional fields can be added based on requirements
+
+    // Constructors, Getters, Setters
+}
+
+public enum NotificationType {
+    EMAIL,
+    SMS,
+    PUSH // You can add more types as needed
+}
+
+public enum NotificationStatus {
+    SENT,
+    PENDING,
+    FAILED
+}
+
