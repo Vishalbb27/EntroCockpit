@@ -1,0 +1,42 @@
+spring:
+  application:
+    name: "gatewayserver"
+
+  config:
+    import: "configserver:http://localhost:8071/"
+  cloud:
+    discovery:
+      client:
+        health-indicator:
+          enabled: false
+  
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  endpoint:
+    gateway:
+      enabled: true
+  info:
+    env:
+      enabled: true
+  metrics:
+    tags:
+      application: ${spring.application.name}
+
+info:
+  app:
+    name: "gatewayserver"
+    description: "Gateway Server Application"
+    version: "1.0.0"
+
+logging:
+  level:
+    com:
+      entrocopilot:
+        gatewayserver: DEBUG
+  pattern:
+    level: "%5p [${spring.application.name},%X{trace_id},%X{span_id}]"
+
+

@@ -1,0 +1,43 @@
+spring:
+  application:
+    name: "configserver"
+  profiles:
+    #active: native -> This is only used when using file systems
+    active: git
+  cloud:
+    config:
+      server:
+        #native:
+          #search-locations: "classpath:/config"
+        git:
+          uri: "https://github.com/Vishalbb27/entrocopilotconfiguration.git"
+          default-label: master
+          timeout: 5
+          clone-one-start: true
+          force-pull: true
+    rabbitmq:
+      host: "localhost"
+      port: 5672
+      username: "guest"
+      password: "guest"
+
+management:
+  endpoint:
+    health:
+      probes:
+        enabled: true
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  health:
+    readiness-state:
+      enabled: true
+    liveness-state:
+      enabled: true
+
+
+encrypt:
+  key: "1234BANK"
+server:
+  port: 8071
