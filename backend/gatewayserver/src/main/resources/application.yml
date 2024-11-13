@@ -1,14 +1,32 @@
 spring:
   application:
     name: "gatewayserver"
-
   config:
     import: "configserver:http://localhost:8071/"
   cloud:
-    discovery:
-      client:
-        health-indicator:
-          enabled: false
+    gateway:
+      routes:
+        - id: user
+          uri: lb://user
+          predicates:
+            - Path=/api/user/**
+#            - Path=/api/userProfile/**
+          filters:
+            - name: AuthenticationFilter # This assumes that the filter is correctly defined as a Spring bean in your application context
+        - id: employeeManagement
+          uri: lb://employeeManagement
+          predicates:
+#            - Path=/api/department/**
+            - Path=/api/employee/**
+          filters:
+            - name: AuthenticationFilter # Same here
+
+        
+#  data:
+#    discovery:
+#      client:
+#        health-indicator:
+#          enabled: false
   
 management:
   endpoints:

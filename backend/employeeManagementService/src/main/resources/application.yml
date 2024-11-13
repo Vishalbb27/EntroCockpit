@@ -1,20 +1,17 @@
 spring:
   application:
-    name: "user"
+    name: "employeeManagement"
   config:
     import: "configserver:http://localhost:8071/"
   data:
     mongodb:
-      uri: "mongodb+srv://${MONGODB_USERNAME}:${MONGODB_PASSWORD}@cluster0.8jr75bi.mongodb.net/user"
+      uri: "mongodb+srv://${MONGODB_USERNAME}:${MONGODB_PASSWORD}@cluster0.8jr75bi.mongodb.net/employeeManagement"
   cloud:
     discovery:
       client:
         health-indicator:
           enabled: false
-
-app:
-  jwt-secret: "daf66e01593f61a15b857cf433aae03a005812b31234e149036bcc8dee755dbb"
-  jwt-expiration-milliseconds: 604800000
+          
 management:
   endpoints:
     web:
@@ -32,16 +29,14 @@ management:
 
 info:
   app:
-    name: "user"
-    description: "User Server Application"
+    name: "employeeManagement"
+    description: "Employee Management Server Application"
     version: "1.0.0"
 
 logging:
   level:
     com:
       entrocopilot:
-        gatewayserver: DEBUG
+        employeeManagement: DEBUG
   pattern:
     level: "%5p [${spring.application.name},%X{trace_id},%X{span_id}]"
-
-  
