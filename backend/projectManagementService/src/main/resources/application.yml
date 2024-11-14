@@ -1,0 +1,42 @@
+spring:
+  application:
+    name: "projectManagement"
+  config:
+    import: "configserver:http://localhost:8071/"
+  data:
+    mongodb:
+      uri: "mongodb+srv://${MONGODB_USERNAME}:${MONGODB_PASSWORD}@cluster0.8jr75bi.mongodb.net/project"
+  cloud:
+    discovery:
+      client:
+        health-indicator:
+          enabled: false
+          
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  endpoint:
+    gateway:
+      enabled: true
+  info:
+    env:
+      enabled: true
+  metrics:
+    tags:
+      application: ${spring.application.name}
+
+info:
+  app:
+    name: "projectManagement"
+    description: "Project Management Server Application"
+    version: "1.0.0"
+
+logging:
+  level:
+    com:
+      entrocopilot:
+        projectManagement: DEBUG
+  pattern:
+    level: "%5p [${spring.application.name},%X{trace_id},%X{span_id}]"

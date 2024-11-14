@@ -20,6 +20,13 @@ spring:
             - Path=/api/employee/**
           filters:
             - name: AuthenticationFilter # Same here
+        - id: projectManagement
+          uri: lb://projectManagement
+          predicates:
+#            - Path=/api/department/**
+            - Path=/api/project/**
+          filters:
+            - name: AuthenticationFilter # Same here
 
         
 #  data:

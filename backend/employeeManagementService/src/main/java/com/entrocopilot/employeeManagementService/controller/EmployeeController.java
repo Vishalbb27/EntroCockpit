@@ -46,6 +46,12 @@ public class EmployeeController {
 		return new ResponseEntity<EmployeeDto>(empDto,HttpStatus.CREATED);
 	}
 	
+	@GetMapping("/validateEmployee")
+	public ResponseEntity<Boolean> validateEmployee(@RequestParam("id") String id){
+		Boolean employeeExists = employeeService.validateEmployee(id);
+		return new ResponseEntity<Boolean>(employeeExists,HttpStatus.CREATED);
+	}
+	
 	@GetMapping("/user")
 	public ResponseEntity<EmployeeDto> getEmployeeByUserId(@RequestParam("id") String id){
 		EmployeeDto empDto = employeeService.getEmployeeByUserId(id);
@@ -63,6 +69,7 @@ public class EmployeeController {
 		List<EmployeeDto> empDto = employeeService.getEmployeesByDepartment(id);
 		return new ResponseEntity<List<EmployeeDto>>(empDto,HttpStatus.CREATED);
 	}
+	
 	
 	@DeleteMapping
 	public ResponseEntity<?> deleteEmployeeById(@RequestParam("id") String id){

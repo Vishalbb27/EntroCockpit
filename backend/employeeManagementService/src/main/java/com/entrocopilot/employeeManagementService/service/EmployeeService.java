@@ -20,5 +20,5 @@ public interface EmployeeService {
 	
 	public List<EmployeeDto> getEmployeesByDepartment(String id);
 	
-	
+	public Boolean validateEmployee(String id);
 }

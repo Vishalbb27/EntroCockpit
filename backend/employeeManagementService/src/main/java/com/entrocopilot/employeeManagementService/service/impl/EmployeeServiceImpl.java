@@ -138,4 +138,10 @@ public class EmployeeServiceImpl implements EmployeeService {
 		return employeeDtos;
 	}
 
+	@Override
+	public Boolean validateEmployee(String id) {
+		Boolean employeeValidation = employeeRepository.existsByUserId(id)
+;		return employeeValidation;
+	}
+
 }
