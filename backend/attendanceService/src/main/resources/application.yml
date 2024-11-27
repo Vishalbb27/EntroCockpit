@@ -1,0 +1,41 @@
+spring:
+  application:
+    name: "attendance"
+  config:
+    import: "configserver:http://localhost:8071/"
+  data:
+    mongodb:
+      uri: "mongodb+srv://${MONGODB_USERNAME}:${MONGODB_PASSWORD}@cluster0.8jr75bi.mongodb.net/attendance"
+  cloud:
+    discovery:
+      client:
+        health-indicator:
+          enabled: false
+          
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  endpoint:
+    gateway:
+      enabled: true
+  info:
+    env:
+      enabled: true
+  metrics:
+    tags:
+      application: ${spring.application.name}
+
+info:
+  app:
+    name: "attendance"
+    description: "Attendance Server Application"
+    version: "1.0.0"
+logging:
+  level:
+    com:
+      entrocopilot:
+        employeeManagement: DEBUG
+  pattern:
+    level: "%5p [${spring.application.name},%X{trace_id},%X{span_id}]"
